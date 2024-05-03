@@ -686,6 +686,7 @@ pub enum Expr {
     },
     /// Scalar function call e.g. `LEFT(foo, 5)`
     Function(Function),
+    ClickhouseFunction(ClickhouseFunction),
     /// `CASE [<operand>] WHEN <condition> THEN <result> ... [ELSE <result>] END`
     ///
     /// Note we only recognize a complete single expression as `<condition>`,
@@ -1102,6 +1103,7 @@ impl fmt::Display for Expr {
                 write!(f, " '{}'", &value::escape_single_quote_string(value))
             }
             Expr::Function(fun) => write!(f, "{fun}"),
+            Expr::ClickhouseFunction(fun) => write!(f, "{fun}"),
             Expr::Case {
                 operand,
                 conditions,
@@ -4831,6 +4833,15 @@ impl fmt::Display for CloseCursor {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+pub struct ClickhouseFunction {
+    pub name: ObjectName,
+    pub args: Vec<FunctionArg>,
+    pub inner_args: Vec<FunctionArg>,
+}
+
 /// A function call
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -5035,7 +5046,18 @@ impl fmt::Display for AnalyzeFormat {
         })
     }
 }
-
+impl fmt::Display for ClickhouseFunction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}({})({})",
+            self.name,
+            display_comma_separated(&self.args),
+            display_comma_separated(&self.inner_args),
+        )?;
+        Ok(())
+    }
+}
 /// External table's available file format
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

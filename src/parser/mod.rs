@@ -1310,6 +1310,15 @@ impl<'a> Parser<'a> {
             vec![]
         };
 
+        // Clickhouse function can have two set of paranthesis one after another.
+        if self.consume_token(&Token::LParen) {
+            let inner_args = self.parse_optional_args()?;
+            return Ok(Expr::ClickhouseFunction(ClickhouseFunction {
+                name,
+                args: args.args,
+                inner_args,
+            }));
+        }
         let filter = if self.dialect.supports_filter_during_aggregation()
             && self.parse_keyword(Keyword::FILTER)
             && self.consume_token(&Token::LParen)
