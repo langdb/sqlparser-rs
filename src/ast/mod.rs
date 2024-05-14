@@ -2585,6 +2585,8 @@ pub enum Statement {
     Explain {
         /// `EXPLAIN | DESC | DESCRIBE`
         describe_alias: DescribeAlias,
+        /// Clickhouse:  show information about a table or a query
+        table: bool,
         /// Carry out the command and show actual run times and other statistics.
         analyze: bool,
         // Display additional information regarding the plan.
@@ -2764,6 +2766,7 @@ impl fmt::Display for Statement {
                 analyze,
                 statement,
                 format,
+                table,
             } => {
                 write!(f, "{describe_alias} ")?;
 
@@ -2773,6 +2776,10 @@ impl fmt::Display for Statement {
 
                 if *verbose {
                     write!(f, "VERBOSE ")?;
+                }
+
+                if *table {
+                    write!(f, "TABLE ")?;
                 }
 
                 if let Some(format) = format {

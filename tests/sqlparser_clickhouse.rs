@@ -218,6 +218,8 @@ fn parse_create_table() {
     clickhouse().verified_stmt(
         r#"CREATE TABLE "x" ("a" "int") ENGINE=MergeTree ORDER BY ("x") AS SELECT * FROM "t" WHERE true"#,
     );
+    clickhouse()
+        .verified_stmt(r#"CREATE TABLE x (a ARRAY(`String`)) ENGINE=MergeTree ORDER BY (x)"#);
 }
 
 #[test]
@@ -236,6 +238,11 @@ fn parse_limit_by() {
     clickhouse_and_generic().verified_stmt(
         r#"SELECT * FROM default.last_asset_runs_mv ORDER BY created_at DESC LIMIT 1 BY asset, toStartOfDay(created_at)"#,
     );
+}
+
+#[test]
+fn parse_describe_statement() {
+    clickhouse().verified_stmt("DESCRIBE TABLE (SELECT * FROM tbl)");
 }
 
 #[test]

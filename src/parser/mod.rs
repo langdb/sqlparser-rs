@@ -6802,6 +6802,13 @@ impl<'a> Parser<'a> {
                 Keyword::ARRAY => {
                     if dialect_of!(self is SnowflakeDialect) {
                         Ok(DataType::Array(ArrayElemTypeDef::None))
+                    } else if self.peek_token().token == Token::LParen {
+                        let _ = self.consume_token(&Token::LParen);
+                        let inside_type = self.parse_data_type()?;
+                        self.expect_token(&Token::RParen)?;
+                        Ok(DataType::Array(ArrayElemTypeDef::Parenthesis(Box::new(
+                            inside_type,
+                        ))))
                     } else {
                         self.expect_token(&Token::Lt)?;
                         let (inside_type, _trailing_bracket) = self.parse_data_type_helper()?;
@@ -7388,6 +7395,7 @@ impl<'a> Parser<'a> {
     ) -> Result<Statement, ParserError> {
         let analyze = self.parse_keyword(Keyword::ANALYZE);
         let verbose = self.parse_keyword(Keyword::VERBOSE);
+        let table = self.parse_keyword(Keyword::TABLE);
         let mut format = None;
         if self.parse_keyword(Keyword::FORMAT) {
             format = Some(self.parse_analyze_format()?);
@@ -7403,6 +7411,7 @@ impl<'a> Parser<'a> {
                 verbose,
                 statement: Box::new(statement),
                 format,
+                table,
             }),
             _ => {
                 let mut hive_format = None;

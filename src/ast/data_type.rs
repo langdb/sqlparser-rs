@@ -350,6 +350,7 @@ impl fmt::Display for DataType {
                 ArrayElemTypeDef::SquareBracket(t, None) => write!(f, "{t}[]"),
                 ArrayElemTypeDef::SquareBracket(t, Some(size)) => write!(f, "{t}[{size}]"),
                 ArrayElemTypeDef::AngleBracket(t) => write!(f, "ARRAY<{t}>"),
+                ArrayElemTypeDef::Parenthesis(t) => write!(f, "ARRAY({t})"),
             },
             DataType::Custom(ty, modifiers) => {
                 if modifiers.is_empty() {
@@ -593,4 +594,6 @@ pub enum ArrayElemTypeDef {
     AngleBracket(Box<DataType>),
     /// `INT[]` or `INT[2]`
     SquareBracket(Box<DataType>, Option<u64>),
+    /// Clickhouse: `ARRAY(`String`)`
+    Parenthesis(Box<DataType>),
 }
