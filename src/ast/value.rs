@@ -86,6 +86,8 @@ pub enum Value {
     Null,
     /// `?` or `$` Prepared statement arg placeholder
     Placeholder(String),
+    /// TODO: Retain compatibility with langdb.
+    UnQuotedString(String),
 }
 
 impl fmt::Display for Value {
@@ -115,6 +117,7 @@ impl fmt::Display for Value {
             Value::TripleDoubleQuotedRawStringLiteral(v) => write!(f, r#"R"""{v}""""#),
             Value::Null => write!(f, "NULL"),
             Value::Placeholder(v) => write!(f, "{v}"),
+            Value::UnQuotedString(v) => write!(f, "{v}"),
         }
     }
 }
