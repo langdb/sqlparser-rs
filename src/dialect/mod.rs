@@ -271,6 +271,10 @@ pub trait Dialect: Debug + Any {
         // return None to fall back to the default behavior
         None
     }
+
+    fn retain_datatype_original_style(&self) -> bool {
+        true
+    }
 }
 
 impl dyn Dialect {

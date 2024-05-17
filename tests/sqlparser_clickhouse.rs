@@ -220,6 +220,15 @@ fn parse_create_table() {
     );
     clickhouse()
         .verified_stmt(r#"CREATE TABLE x (a ARRAY(`String`)) ENGINE=MergeTree ORDER BY (x)"#);
+
+    clickhouse().verified_stmt(
+        r#"CREATE TABLE x (a TUPLE(`String`, ARRAY(`String`))) ENGINE=MergeTree ORDER BY (x)"#,
+    );
+}
+#[test]
+fn parse_create_table_adv() {
+    clickhouse()
+        .verified_stmt(r#"CREATE TABLE x (a Array(`String`)) ENGINE=MergeTree ORDER BY (x)"#);
 }
 
 #[test]
