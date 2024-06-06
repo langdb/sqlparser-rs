@@ -847,6 +847,8 @@ pub const RESERVED_FOR_TABLE_ALIAS: &[Keyword] = &[
     Keyword::CONNECT,
     // Reserved for snowflake MATCH_RECOGNIZE
     Keyword::MATCH_RECOGNIZE,
+    // Reserved for langdb CREATE ENDPOINT
+    Keyword::COMMENT,
 ];
 
 /// Can't be used as a column alias, so that `SELECT <expr> alias`
