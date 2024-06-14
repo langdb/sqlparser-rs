@@ -5027,7 +5027,27 @@ impl<'a> Parser<'a> {
             self.expect_token(&Token::Eq)?;
             let next_token = self.next_token();
             match next_token.token {
-                Token::Word(w) => Some(w.value),
+                Token::Word(w) => {
+                    let mut args = Vec::new();
+                    let mut engine_type: Vec<String> = Vec::new();
+                    engine_type.push(w.value);
+
+                    if self.peek_token() == Token::LParen {
+                        self.next_token(); 
+                        loop {
+                            let arg = self.next_token();
+                            match arg.token {
+                                Token::SingleQuotedString(s) => args.push(format!("'{}'", s)),
+                                Token::Comma => args.push(format!(",")), 
+                                Token::RParen => break,   
+                                _ => self.expected(&format!("Arguments for Engine: {:?}", engine_type), arg)?,
+                            }
+                        }
+                        Some(format!("{}({})", engine_type.join(""),  args.join("")))
+                    } else {
+                        Some(engine_type.join(""))
+                    }
+                }
                 _ => self.expected("identifier", next_token)?,
             }
         } else {
