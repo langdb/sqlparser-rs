@@ -5040,7 +5040,7 @@ impl<'a> Parser<'a> {
                                 Token::SingleQuotedString(s) => args.push(format!("'{}'", s)),
                                 Token::Comma => args.push(format!(",")), 
                                 Token::RParen => break,   
-                                _ => self.expected("argument for engine function", arg)?,
+                                _ => self.expected(&format!("Arguments for Engine: {:?}", engine_type), arg)?,
                             }
                         }
                         Some(format!("{}({})", engine_type.join(""),  args.join("")))
