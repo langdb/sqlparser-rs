@@ -559,6 +559,7 @@ define_keywords!(
     PROCEDURE,
     PROGRAM,
     PROMPT,
+    PROVIDER,
     PURGE,
     QUALIFY,
     QUARTER,
