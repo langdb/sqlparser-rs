@@ -1329,14 +1329,13 @@ impl fmt::Display for TableFactor {
                 if let Some(args) = args {
                     write!(f, "(")?;
                     write!(f, "{}", display_comma_separated(&args.args))?;
+                    write!(f, ")")?;
+
                     if let Some(ref settings) = args.settings {
-                        if !args.args.is_empty() {
-                            write!(f, ", ")?;
-                        }
                         write!(f, "SETTINGS {}", display_comma_separated(settings))?;
                     }
-                    write!(f, ")")?;
                 }
+                
                 if *with_ordinality {
                     write!(f, " WITH ORDINALITY")?;
                 }
