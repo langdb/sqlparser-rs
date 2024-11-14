@@ -406,6 +406,7 @@ define_keywords!(
     KEY,
     KEYS,
     KILL,
+    KNOWLEDGE,
     LAG,
     LANGUAGE,
     LARGE,
